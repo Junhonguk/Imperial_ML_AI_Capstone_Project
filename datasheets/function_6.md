@@ -1,6 +1,6 @@
 # Datasheet: Function 6 (5D)
 
-*BBO capstone. This record is final at 12 graded queries; the round-13 query has been submitted and its result is pending.*
+*BBO capstone. This record is final: the campaign is complete at 13 graded queries.*
 *Every number on this page comes from `data/function_6/` and `results/query_log.csv` (sheets generated, then checked against the data).*
 
 ---
@@ -25,7 +25,7 @@ Maximise.
 ## 2. Nature of the data
 
 **Structure**
-Inputs are `float64` in [0, 1]^5. The supplied outputs range from -2.571 to -0.7143 (median -1.446). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x5,y`). There are 32 observations in total (20 supplied + 12 queried).
+Inputs are `float64` in [0, 1]^5. The supplied outputs range from -2.571 to -0.7143 (median -1.446). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x5,y`). There are 33 observations in total (20 supplied + 13 queried).
 
 **How the data changed over the campaign**
 One point per week. The supplied design is space-filling, the early queries are spread out (corners, faces, global EI), and the later queries are concentrated within about 0.01-0.05 of the incumbent. The final dataset is therefore dense around the best point and sparse elsewhere. That suits maximisation but makes it a biased sample of the function as a whole.
@@ -72,17 +72,17 @@ The improvement came in steps: -0.564 (week 1), -0.355 (2), -0.256 (7), -0.137 (
 | 10 | `0.427581-0.382223-0.730707-0.724506-0.110571` | -0.1400928274 |  |
 | 11 | `0.446100-0.387711-0.689105-0.714091-0.198789` | -0.3383464059 |  |
 | 12 | `0.459225-0.362711-0.668900-0.769091-0.175571` | -0.0974975397 | yes |
-| 13 | `0.439225-0.342711-0.688900-0.766119-0.155571` | *pending* | |
+| 13 | `0.439225-0.342711-0.688900-0.766119-0.155571` | -0.06109775805 | yes |
 
 *Record* means the reading beat every earlier observation, including the supplied data.
 
 ## 6. Performance and results
 
-Best -0.0974975 at (0.459225, 0.362711, 0.668900, 0.769091, 0.175571), week 12. Week 13 is a trust-region step; the driver predicts -0.063 ± 0.031.
+Best -0.0610978 at (0.439225, 0.342711, 0.688900, 0.766119, 0.155571), week 13. The final trust-region step landed inside its predicted window (-0.063 ± 0.031) for a sixth record; the function was still climbing when the budget ended.
 
 | Supplied best | Final best | Gain | Best point (week) |
 |---:|---:|---:|---|
-| -0.7142649478 | -0.0974975397 | +0.6168 | `0.459225-0.362711-0.668900-0.769091-0.175571` (week 12) |
+| -0.7142649478 | -0.0610977580 | +0.6532 | `0.439225-0.342711-0.688900-0.766119-0.155571` (week 13) |
 
 The surrogate at campaign end: [`reports/figures/surrogate_F6.png`](../reports/figures/surrogate_F6.png).
 

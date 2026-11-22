@@ -21,4 +21,4 @@ Each function sheet follows the same seven sections:
 6. Results
 7. Ethical and practical considerations
 
-The sheets are final at 12 graded queries. Round 13 is shown as processed.
+The sheets cover the complete campaign: all 13 queries graded.

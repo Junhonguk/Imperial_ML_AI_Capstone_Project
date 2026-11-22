@@ -1,6 +1,6 @@
 # Datasheet: Function 2 (2D)
 
-*BBO capstone. This record is final at 12 graded queries; the round-13 query has been submitted and its result is pending.*
+*BBO capstone. This record is final: the campaign is complete at 13 graded queries.*
 *Every number on this page comes from `data/function_2/` and `results/query_log.csv` (sheets generated, then checked against the data).*
 
 ---
@@ -25,7 +25,7 @@ Maximise.
 ## 2. Nature of the data
 
 **Structure**
-Inputs are `float64` in [0, 1]^2. The supplied outputs range from -0.06562 to 0.6112 (median 0.2298). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x2,y`). There are 22 observations in total (10 supplied + 12 queried).
+Inputs are `float64` in [0, 1]^2. The supplied outputs range from -0.06562 to 0.6112 (median 0.2298). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x2,y`). There are 23 observations in total (10 supplied + 13 queried).
 
 **How the data changed over the campaign**
 One point per week. The supplied design is space-filling, the early queries are spread out (corners, faces, global EI), and the later queries are concentrated within about 0.01-0.05 of the incumbent. The final dataset is therefore dense around the best point and sparse elsewhere. That suits maximisation but makes it a biased sample of the function as a whole.
@@ -45,7 +45,7 @@ Noise-aware GP + EI (weeks 1-3: corner and edge probes); a local search along th
 Week 4 found the x2 = 1 edge (0.646). Readings less than 1e-3 apart then differed by up to 0.2 (weeks 9 and 10: 0.661 and 0.460, 3e-4 apart), which a smooth GP can only call noise. Once determinism was known, the spacing of the high readings gave a period. The remaining queries were placed at predicted spike positions instead of at the GP's posterior-mean argmax.
 
 **Final regime** (`src/bbo/config.py`)
-`lottery`. periodic micro-spikes, period 2.71e-4, heights rising with x1; best 0.6612.
+`lottery`. periodic micro-spikes, period 2.71e-4, heights rising with x1; best 0.7472.
 
 ## 4. Data handling and preprocessing
 
@@ -56,7 +56,7 @@ Week 4 found the x2 = 1 edge (0.646). Readings less than 1e-3 apart then differe
 
 ## 5. Weekly iteration and learning
 
-The week-11 parabola fit along x1 was refuted (0.481). The period model then predicted a spike at x1 = 0.691068 (= 0.69161 − 2 × 2.71e-4), and week 12 returned 0.643, confirming the position although not beating 0.6612. Week 13 tests the next predicted spike at 0.691881 (+1 period).
+The week-11 parabola fit along x1 was refuted (0.481). The period model then predicted a spike at x1 = 0.691068 (= 0.69161 − 2 × 2.71e-4), and week 12 returned 0.643, confirming the position although not beating 0.6612. Week 13 tested the next predicted spike at 0.691881 (+1 period) and returned 0.7472 - the position was right and the spike far taller than any seen, the largest single-week record of the endgame.
 
 | Week | Query (portal string) | Observed | Record? |
 |---:|---|---:|:---:|
@@ -72,17 +72,17 @@ The week-11 parabola fit along x1 was refuted (0.481). The period model then pre
 | 10 | `0.691909-0.999999` | 0.460321852 |  |
 | 11 | `0.691481-0.999999` | 0.4814186 |  |
 | 12 | `0.691068-0.999999` | 0.6431640269 |  |
-| 13 | `0.691881-0.999999` | *pending* | |
+| 13 | `0.691881-0.999999` | 0.7472263869 | yes |
 
 *Record* means the reading beat every earlier observation, including the supplied data.
 
 ## 6. Performance and results
 
-Best 0.6612264 at (0.691610, 0.999999), week 9. The gain over the supplied design (+0.050) is the smallest of the eight functions.
+Best 0.7472264 at (0.691881, 0.999999), week 13. The final lottery query turned F2 from the smallest gain of the eight functions into a +0.136 gain.
 
 | Supplied best | Final best | Gain | Best point (week) |
 |---:|---:|---:|---|
-| 0.6112052158 | 0.6612264043 | +0.05002 | `0.691610-0.999999` (week 9) |
+| 0.6112052158 | 0.7472263869 | +0.13602 | `0.691881-0.999999` (week 13) |
 
 The surrogate at campaign end: [`reports/figures/surrogate_F2.png`](../reports/figures/surrogate_F2.png).
 

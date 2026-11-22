@@ -1,6 +1,6 @@
 # Datasheet: Function 4 (4D)
 
-*BBO capstone. This record is final at 12 graded queries; the round-13 query has been submitted and its result is pending.*
+*BBO capstone. This record is final: the campaign is complete at 13 graded queries.*
 *Every number on this page comes from `data/function_4/` and `results/query_log.csv` (sheets generated, then checked against the data).*
 
 ---
@@ -25,7 +25,7 @@ Maximise.
 ## 2. Nature of the data
 
 **Structure**
-Inputs are `float64` in [0, 1]^4. The supplied outputs range from -32.63 to -4.026 (median -16.04). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x4,y`). There are 42 observations in total (30 supplied + 12 queried).
+Inputs are `float64` in [0, 1]^4. The supplied outputs range from -32.63 to -4.026 (median -16.04). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x4,y`). There are 43 observations in total (30 supplied + 13 queried).
 
 **How the data changed over the campaign**
 One point per week. The supplied design is space-filling, the early queries are spread out (corners, faces, global EI), and the later queries are concentrated within about 0.01-0.05 of the incumbent. The final dataset is therefore dense around the best point and sparse elsewhere. That suits maximisation but makes it a biased sample of the function as a whole.
@@ -39,7 +39,7 @@ Multi-modal, with a sharp, nearly isotropic peak of height about 0.60 near (0.40
 ## 3. Optimisation strategy
 
 **Methods used**
-GP + EI (weeks 1-4); a trust region (weeks 5-6); local isotropic triangulation on raw values within radius 0.13 of the incumbent (weeks 7-12).
+GP + EI (weeks 1-4); a trust region (weeks 5-6); local isotropic triangulation on raw values within radius 0.13 of the incumbent (weeks 7-13).
 
 **Why these methods**
 Weeks 1-2 found the peak region quickly (0.26, then 0.47). Week 3 (0.169) and week 4 (-0.070) were misses and triggered a trust region from week 5. Week 5 crashed to -0.889 and the box was shrunk. This showed the GP's lengthscales were far wider than the peak. A 6-coefficient isotropic quadratic fitted to the local readings then predicted the centre directly.
@@ -72,17 +72,17 @@ This is the clearest case of calibration driving a change of model: two misses m
 | 10 | `0.408815-0.400815-0.365021-0.411389` | 0.6013445058 | yes |
 | 11 | `0.408797-0.400911-0.365054-0.411400` | 0.6018624324 | yes |
 | 12 | `0.408786-0.400970-0.365073-0.411406` | 0.6021859849 | yes |
-| 13 | `0.408778-0.401009-0.365086-0.411411` | *pending* | |
+| 13 | `0.408778-0.401009-0.365086-0.411411` | 0.6023985048 | yes |
 
 *Record* means the reading beat every earlier observation, including the supplied data.
 
 ## 6. Performance and results
 
-Best 0.6021860 at (0.408786, 0.400970, 0.365073, 0.411406), week 12. Eight records, more than any other function. Week 13 is the next triangulated centre (fit peak about 0.609, R² 0.994).
+Best 0.6023985 at (0.408778, 0.401009, 0.365086, 0.411411), week 13. Nine records, more than any other function - the last seven of them consecutive triangulation refinements.
 
 | Supplied best | Final best | Gain | Best point (week) |
 |---:|---:|---:|---|
-| -4.025542282 | 0.6021859849 | +4.628 | `0.408786-0.400970-0.365073-0.411406` (week 12) |
+| -4.025542282 | 0.6023985048 | +4.628 | `0.408778-0.401009-0.365086-0.411411` (week 13) |
 
 The surrogate at campaign end: [`reports/figures/surrogate_F4.png`](../reports/figures/surrogate_F4.png).
 

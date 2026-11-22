@@ -1,6 +1,6 @@
 # Datasheet: Function 7 (6D)
 
-*BBO capstone. This record is final at 12 graded queries; the round-13 query has been submitted and its result is pending.*
+*BBO capstone. This record is final: the campaign is complete at 13 graded queries.*
 *Every number on this page comes from `data/function_7/` and `results/query_log.csv` (sheets generated, then checked against the data).*
 
 ---
@@ -25,7 +25,7 @@ Maximise.
 ## 2. Nature of the data
 
 **Structure**
-Inputs are `float64` in [0, 1]^6. The supplied outputs range from 0.002701 to 1.365 (median 0.07863). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x6,y`). There are 42 observations in total (30 supplied + 12 queried).
+Inputs are `float64` in [0, 1]^6. The supplied outputs range from 0.002701 to 1.365 (median 0.07863). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x6,y`). There are 43 observations in total (30 supplied + 13 queried).
 
 **How the data changed over the campaign**
 One point per week. The supplied design is space-filling, the early queries are spread out (corners, faces, global EI), and the later queries are concentrated within about 0.01-0.05 of the incumbent. The final dataset is therefore dense around the best point and sparse elsewhere. That suits maximisation but makes it a biased sample of the function as a whole.
@@ -72,17 +72,17 @@ Records in weeks 4, 6 and 7, followed by a plateau (2.766-2.770 in weeks 8-10). 
 | 10 | `0.000001-0.165421-0.483617-0.274693-0.302544-0.712794` | 2.768993956 |  |
 | 11 | `0.000001-0.157587-0.463617-0.293731-0.319323-0.685665` | 2.809329987 | yes |
 | 12 | `0.000001-0.152547-0.478617-0.307971-0.317994-0.686451` | 2.79302872 |  |
-| 13 | `0.000001-0.150045-0.470479-0.285731-0.317670-0.677665` | *pending* | |
+| 13 | `0.000001-0.150045-0.470479-0.285731-0.317670-0.677665` | 2.826446203 | yes |
 
 *Record* means the reading beat every earlier observation, including the supplied data.
 
 ## 6. Performance and results
 
-Best 2.8093300 at (0.000001, 0.157587, 0.463617, 0.293731, 0.319323, 0.685665), week 11. Week 13 is a trust-region step; the driver predicts 2.820 ± 0.004.
+Best 2.8264462 at (0.000001, 0.150045, 0.470479, 0.285731, 0.317670, 0.677665), week 13. The final trust-region step beat its prediction of 2.820 ± 0.004 to the upside for a sixth record.
 
 | Supplied best | Final best | Gain | Best point (week) |
 |---:|---:|---:|---|
-| 1.364968304 | 2.809329987 | +1.444 | `0.000001-0.157587-0.463617-0.293731-0.319323-0.685665` (week 11) |
+| 1.364968304 | 2.826446203 | +1.461 | `0.000001-0.150045-0.470479-0.285731-0.317670-0.677665` (week 13) |
 
 The surrogate at campaign end: [`reports/figures/surrogate_F7.png`](../reports/figures/surrogate_F7.png).
 

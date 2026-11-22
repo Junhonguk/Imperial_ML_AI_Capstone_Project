@@ -1,6 +1,6 @@
 # Datasheet: Function 3 (3D)
 
-*BBO capstone. This record is final at 12 graded queries; the round-13 query has been submitted and its result is pending.*
+*BBO capstone. This record is final: the campaign is complete at 13 graded queries.*
 *Every number on this page comes from `data/function_3/` and `results/query_log.csv` (sheets generated, then checked against the data).*
 
 ---
@@ -25,7 +25,7 @@ Maximise.
 ## 2. Nature of the data
 
 **Structure**
-Inputs are `float64` in [0, 1]^3. The supplied outputs range from -0.3989 to -0.03484 (median -0.106). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x3,y`). There are 27 observations in total (15 supplied + 12 queried).
+Inputs are `float64` in [0, 1]^3. The supplied outputs range from -0.3989 to -0.03484 (median -0.106). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x3,y`). There are 28 observations in total (15 supplied + 13 queried).
 
 **How the data changed over the campaign**
 One point per week. The supplied design is space-filling, the early queries are spread out (corners, faces, global EI), and the later queries are concentrated within about 0.01-0.05 of the incumbent. The final dataset is therefore dense around the best point and sparse elsewhere. That suits maximisation but makes it a biased sample of the function as a whole.
@@ -72,13 +72,13 @@ Week 6 stepped 0.15 per axis and fell to -0.120: the peak is narrow. Weeks 7-12 
 | 10 | `0.513975-0.730029-0.518443` | -0.02996874042 |  |
 | 11 | `0.463975-0.780029-0.472488` | -0.02968114034 |  |
 | 12 | `0.473975-0.750029-0.495419` | -0.01086008325 |  |
-| 13 | `0.489975-0.766029-0.494443` | *pending* | |
+| 13 | `0.489975-0.766029-0.494443` | -0.01123704552 |  |
 
 *Record* means the reading beat every earlier observation, including the supplied data.
 
 ## 6. Performance and results
 
-Best -0.0081869 at (0.483975, 0.760029, 0.488443), week 5. One record in 12 weeks. Week 13 (0.489975, 0.766029, 0.494443) is a trust-region step; the driver predicts -0.0063 ± 0.0044.
+Best -0.0081869 at (0.483975, 0.760029, 0.488443), week 5. One record in 13 weeks. The final trust-region step returned -0.0112 against a prediction of -0.0063 ± 0.0044 - a miss; the week-5 incumbent stands.
 
 | Supplied best | Final best | Gain | Best point (week) |
 |---:|---:|---:|---|

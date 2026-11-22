@@ -1,6 +1,6 @@
 # Datasheet: Function 1 (2D)
 
-*BBO capstone. This record is final at 12 graded queries; the round-13 query has been submitted and its result is pending.*
+*BBO capstone. This record is final: the campaign is complete at 13 graded queries.*
 *Every number on this page comes from `data/function_1/` and `results/query_log.csv` (sheets generated, then checked against the data).*
 
 ---
@@ -25,7 +25,7 @@ Maximise.
 ## 2. Nature of the data
 
 **Structure**
-Inputs are `float64` in [0, 1]^2. The supplied outputs range from -0.003606 to 7.711e-16 (median 6.794e-80). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x2,y`). There are 22 observations in total (10 supplied + 12 queried).
+Inputs are `float64` in [0, 1]^2. The supplied outputs range from -0.003606 to 7.711e-16 (median 6.794e-80). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x2,y`). There are 23 observations in total (10 supplied + 13 queried).
 
 **How the data changed over the campaign**
 One point per week. The supplied design is space-filling, the early queries are spread out (corners, faces, global EI), and the later queries are concentrated within about 0.01-0.05 of the incumbent. The final dataset is therefore dense around the best point and sparse elsewhere. That suits maximisation but makes it a biased sample of the function as a whole.
@@ -72,17 +72,17 @@ The jump from about 2e-11 to 1.989 in week 2 came from changing the model class,
 | 10 | `0.628534-0.628591` | 1.999987263 | yes |
 | 11 | `0.628534-0.628531` | 1.999999465 | yes |
 | 12 | `0.628534-0.628540` | 1.999999837 | yes |
-| 13 | `0.628535-0.628540` | *pending* | |
+| 13 | `0.628535-0.628540` | 1.999999888 | yes |
 
 *Record* means the reading beat every earlier observation, including the supplied data.
 
 ## 6. Performance and results
 
-Best 1.9999998375 at (0.628534, 0.628540), week 12. The fitted peak implies a true maximum of 2.0, so the gap is about 1.6e-7. Week 13 (0.628535, 0.628540) moves x1 by 1e-6 to test the last free axis.
+Best 1.9999998885 at (0.628535, 0.628540), week 13. The fitted peak implies a true maximum of 2.0, so the gap is about 1.1e-7. The final query moved x1 by 1e-6 to test the last free axis and gained +5.1e-8 - an eighth record.
 
 | Supplied best | Final best | Gain | Best point (week) |
 |---:|---:|---:|---|
-| 7.710875115e-16 | 1.999999837 | +2 | `0.628534-0.628540` (week 12) |
+| 7.710875115e-16 | 1.999999888 | +2 | `0.628535-0.628540` (week 13) |
 
 The surrogate at campaign end: [`reports/figures/surrogate_F1.png`](../reports/figures/surrogate_F1.png).
 

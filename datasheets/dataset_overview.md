@@ -45,8 +45,8 @@ blank. Nothing else is missing, and no values were imputed.
 `y` is the target. There are no other labels.
 
 **Noise**
-None. The functions are deterministic: one point queried three times
-returned identical values to the last bit (F5, weeks 7, 10 and 12).
+None. The functions are deterministic: one point queried four times
+returned identical values to the last bit (F5, weeks 7, 10, 12 and 13).
 
 **Confidential or personal data**
 None. All values are synthetic.
@@ -67,7 +67,7 @@ function's best point. As a result, the data oversamples the neighbourhood of
 each optimum.
 
 **Timeframe**
-13 weekly rounds. Rounds 1–12 are graded and round 13 is pending.
+13 weekly rounds, all graded. The campaign is complete.
 
 ## Preprocessing, cleaning and labelling
 

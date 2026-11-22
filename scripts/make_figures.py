@@ -93,7 +93,7 @@ def best_so_far(data_dir, out):
                 labels.append(l)
     fig.legend(handles, labels, loc="lower center", ncol=4, frameon=False,
                bbox_to_anchor=(0.5, -0.04))
-    fig.suptitle("Best value found per function over 12 graded weeks",
+    fig.suptitle("Best value found per function over 13 graded weeks",
                  x=0.01, ha="left", color=INK, fontsize=11)
     fig.tight_layout(rect=(0, 0.03, 1, 0.97))
     fig.savefig(out / "best_so_far.png")
@@ -101,7 +101,7 @@ def best_so_far(data_dir, out):
 
 
 def calibration_hits(results_dir, out):
-    rows = re.findall(r"^\|\s*(\d+->\s*\d+)\s*\|\s*(\d+)/(\d+)\s*\|",
+    rows = re.findall(r"^\|\s*([^|]*?)\s*\|\s*(\d+)/(\d+)\s*\|",
                       (Path(results_dir) / "calibration.md").read_text(),
                       flags=re.M)
     labels = [str(k + 1) for k in range(len(rows))]

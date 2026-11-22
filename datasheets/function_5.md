@@ -1,6 +1,6 @@
 # Datasheet: Function 5 (4D)
 
-*BBO capstone. This record is final at 12 graded queries; the round-13 query has been submitted and its result is pending.*
+*BBO capstone. This record is final: the campaign is complete at 13 graded queries.*
 *Every number on this page comes from `data/function_5/` and `results/query_log.csv` (sheets generated, then checked against the data).*
 
 ---
@@ -25,13 +25,13 @@ Maximise.
 ## 2. Nature of the data
 
 **Structure**
-Inputs are `float64` in [0, 1]^4. The supplied outputs range from 0.1129 to 1089 (median 63.95). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x4,y`). There are 32 observations in total (20 supplied + 12 queried).
+Inputs are `float64` in [0, 1]^4. The supplied outputs range from 0.1129 to 1089 (median 63.95). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x4,y`). There are 33 observations in total (20 supplied + 13 queried).
 
 **How the data changed over the campaign**
 One point per week. The supplied design is space-filling, the early queries are spread out (corners, faces, global EI), and the later queries are concentrated within about 0.01-0.05 of the incumbent. The final dataset is therefore dense around the best point and sparse elsewhere. That suits maximisation but makes it a biased sample of the function as a whole.
 
 **Noise and randomness**
-Deterministic, proven. The corner returned 8662.405001248297 bit-for-bit in weeks 7, 10 and 12.
+Deterministic, proven. The corner returned 8662.405001248297 bit-for-bit in weeks 7, 10, 12 and 13.
 
 **Shape of the function, as observed**
 Unimodal and increasing toward the (1, 1, 1, 1) corner, close to log-linear in each input, with interaction between inputs.
@@ -45,7 +45,7 @@ GP + EI on log(y), riding the trend to the corner (weeks 1-7), then a 4-directio
 On the raw scale a GP is dominated by the few large values. On log y the surface is smooth and close to linear, and EI follows the trend. A corner proposal in week 5 was refused as uncertainty-bait because its mean was below the incumbent. It was re-admitted once the evidence lifted its mean above the incumbent, and in week 7 it returned 8662, a 44% gain.
 
 **Final regime** (`src/bbo/config.py`)
-`done`. corner proven max 8662.405001248297 (4-direction audit; 3x bit-identical).
+`done`. corner proven max 8662.405001248297 (4-direction audit; 4x bit-identical).
 
 ## 4. Data handling and preprocessing
 
@@ -72,13 +72,13 @@ Stepping back from the corner along each input lost value every time (x2 0.85: 6
 | 10 | `0.999999-0.999999-0.999999-0.999999` | 8662.405001 |  |
 | 11 | `0.999999-0.999999-0.999999-0.950000` | 7786.316251 |  |
 | 12 | `0.999999-0.999999-0.999999-0.999999` | 8662.405001 |  |
-| 13 | `0.999999-0.999999-0.999999-0.999999` | *pending* | |
+| 13 | `0.999999-0.999999-0.999999-0.999999` | 8662.405001 |  |
 
 *Record* means the reading beat every earlier observation, including the supplied data.
 
 ## 6. Performance and results
 
-Best 8662.405001248297 at (1, 1, 1, 1) clipped to 0.999999, first found in week 7. Proven maximum. Week 13 repeats the corner.
+Best 8662.405001248297 at (1, 1, 1, 1) clipped to 0.999999, first found in week 7. Proven maximum. Week 13 repeated the corner and returned the value bit-for-bit a fourth time.
 
 | Supplied best | Final best | Gain | Best point (week) |
 |---:|---:|---:|---|

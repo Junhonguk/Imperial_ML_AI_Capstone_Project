@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Version** | 1.1.0 (`src/bbo/__init__.py`), final at 12 graded rounds; round 13 submitted, results pending |
+| **Version** | 1.1.0 (`src/bbo/__init__.py`), final - campaign complete, all 13 rounds graded |
 | **Type** | Sequential decision procedure: GP surrogate + Expected Improvement, with trust-region and parametric-fit regimes |
 | **Code** | `src/bbo/` (package), `scripts/weekly_run.py` (driver), `src/bbo/config.py` (per-function regimes) |
 | **Data** | `data/function_{1..8}/`, documented in [`datasheets/`](datasheets/README.md) |
@@ -94,16 +94,16 @@ Four measures are used, because no single one tells the whole story.
 
 | Fn | Dim | Supplied best | Final best | Gain | Records (weeks) |
 |----|-----|-------------:|-----------:|-----:|-----------------|
-| 1 | 2 | 7.7e-16 | 1.9999998375 | +2.0 (true max 2.0; gap 1.6e-7) | 7 (1, 2, 8–12) |
-| 2 | 2 | 0.6112 | 0.6612264 | +0.050 | 3 (4, 8, 9) |
+| 1 | 2 | 7.7e-16 | 1.9999998885 | +2.0 (true max 2.0; gap 1.1e-7) | 8 (1, 2, 8–13) |
+| 2 | 2 | 0.6112 | 0.7472264 | +0.136 | 4 (4, 8, 9, 13) |
 | 3 | 3 | -0.03484 | -0.0081869 | +0.027 | 1 (5) |
-| 4 | 4 | -4.0255 | 0.6021860 | +4.63 | 8 (1, 2, 7–12) |
+| 4 | 4 | -4.0255 | 0.6023985 | +4.63 | 9 (1, 2, 7–13) |
 | 5 | 4 | 1088.86 | 8662.405001248297 | ×7.96 (proven max) | 6 (1, 3–7) |
-| 6 | 5 | -0.71427 | -0.0974975 | +0.617 | 5 (1, 2, 7, 9, 12) |
-| 7 | 6 | 1.36497 | 2.8093300 | +1.44 (×2.06) | 5 (1, 4, 6, 7, 11) |
-| 8 | 8 | 9.59848 | 9.9481070 | +0.350 | 6 (1, 2, 9–12) |
+| 6 | 5 | -0.71427 | -0.0610978 | +0.653 | 6 (1, 2, 7, 9, 12, 13) |
+| 7 | 6 | 1.36497 | 2.8264462 | +1.46 (×2.07) | 6 (1, 4, 6, 7, 11, 13) |
+| 8 | 8 | 9.59848 | 9.9518160 | +0.353 | 7 (1, 2, 9–13) |
 
-- **Calibration:** 76 of 95 predictions (80%) landed inside their stated
+- **Calibration:** 82 of 103 predictions (80%) landed inside their stated
   range. The rate per round ran from 5/8 to 8/8, with one perfect round
   (7->8). See [`results/calibration.md`](results/calibration.md) and
   [`reports/figures/calibration_hits.png`](reports/figures/calibration_hits.png).
@@ -113,11 +113,13 @@ Four measures are used, because no single one tells the whole story.
   |---|---|---|---|
   | F1 | 1.99999988 | 1.99999984 | 4e-8 |
   | F1 | 2.0009 | 1.99994 | 1e-3 |
+  | F8 | 9.952 | 9.9518 | 2e-4 |
   | F8 | 9.942 | 9.9481 | 6e-3 |
   | F7 | 2.799 | 2.7945 | 5e-3 |
+  | F6 | -0.063 | -0.0611 | 2e-3 |
 
-  F4's triangulated centre predicted about 0.6. Its six refinements returned
-  0.572, 0.598, 0.600, 0.601, 0.602 and 0.602.
+  F4's triangulated centre predicted about 0.6. Its seven refinements returned
+  0.572, 0.598, 0.600, 0.601, 0.602, 0.602 and 0.602.
 
 ## Assumptions
 
@@ -140,16 +142,19 @@ Four measures are used, because no single one tells the whole story.
   week 10, F2's scatter between nearby points was modelled as noise (sd
   about 0.06). The F5 replicate in week 10 showed the functions are
   deterministic. After that, F2's structure was recognised as periodic
-  spikes, but only two queries were left to exploit it. F2 made the
-  smallest gain of all eight (+0.05).
-- **The budget ran out while F6 was still climbing.** F6 set a record in
-  week 12, and the final surrogate slice
+  spikes, with only two queries left to exploit it. The first confirmed the
+  predicted spike position (0.643); the second landed on a spike far taller
+  than any seen (0.7472, +13%). Had determinism been tested earlier, more of
+  that structure could have been mined.
+- **The budget ran out while F6 was still climbing.** F6 set records in
+  weeks 12 and 13 (-0.0975, then -0.0611), and the final surrogate slice
   ([`surrogate_F6.png`](reports/figures/surrogate_F6.png)) still shows an
   upward slope along x5 toward 0. The F6 result is a lower bound on what the
   method could reach.
-- **F3 stalled after week 5.** One record in 12 weeks. The six local queries
-  from week 7 onward returned values between -0.011 and -0.030. The peak is
-  narrower than the capped lengthscale of 0.2 can represent.
+- **F3 stalled after week 5.** One record in 13 weeks. The local queries
+  from week 7 onward returned values between -0.011 and -0.030, the final
+  one missing its predicted -0.0063 ± 0.0044. The peak is narrower than the
+  capped lengthscale of 0.2 can represent.
 - **Some regimes are manual.** `micro` and `lottery` were chosen by a person,
   and the regime switches themselves were judgement calls guided by rules.
   The procedure is auditable but not a turnkey optimiser.

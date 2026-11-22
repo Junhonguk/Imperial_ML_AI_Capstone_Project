@@ -2,9 +2,9 @@
 
 Sequential Bayesian optimisation of eight **deterministic** black-box functions
 (2D to 8D) under a hard budget of **one query per function per week** for 13
-weeks. Every function is maximised over the unit hypercube. Status: 13 rounds
-submitted, 12 graded; the round-13 results were still pending when this record
-was finalised (see [`reports/README.md`](reports/README.md#week-13-pending)).
+weeks. Every function is maximised over the unit hypercube. Status: campaign
+complete - all 13 rounds graded. The final round set six new records (see
+[`reports/README.md`](reports/README.md#week-13-final-results)).
 
 ![Best value found per function](reports/figures/best_so_far.png)
 
@@ -32,14 +32,14 @@ proven, and on another (F1) the result was within 0.0000002 of the true peak.
 
 | Fn | Dim | Description hint | Supplied points | Queried (graded) | Total |
 |----|-----|------------------|---------------:|-----------------:|------:|
-| 1 | 2 | point "sources", near-zero field | 10 | 12 | 22 |
-| 2 | 2 | noisy log-likelihood | 10 | 12 | 22 |
-| 3 | 3 | drug side-effects (outputs <= 0) | 15 | 12 | 27 |
-| 4 | 4 | multi-modal, sharp peak | 30 | 12 | 42 |
-| 5 | 4 | chemical yield (log-scale) | 20 | 12 | 32 |
-| 6 | 5 | recipe score (outputs <= 0) | 20 | 12 | 32 |
-| 7 | 6 | hyperparameter surface | 30 | 12 | 42 |
-| 8 | 8 | near-linear, plateau | 40 | 12 | 52 |
+| 1 | 2 | point "sources", near-zero field | 10 | 13 | 23 |
+| 2 | 2 | noisy log-likelihood | 10 | 13 | 23 |
+| 3 | 3 | drug side-effects (outputs <= 0) | 15 | 13 | 28 |
+| 4 | 4 | multi-modal, sharp peak | 30 | 13 | 43 |
+| 5 | 4 | chemical yield (log-scale) | 20 | 13 | 33 |
+| 6 | 5 | recipe score (outputs <= 0) | 20 | 13 | 33 |
+| 7 | 6 | hyperparameter surface | 30 | 13 | 43 |
+| 8 | 8 | near-linear, plateau | 40 | 13 | 53 |
 
 - The supplied designs are stored **unmodified** as
   `data/function_N/initial_inputs.npy` and `initial_outputs.npy`.
@@ -47,12 +47,11 @@ proven, and on another (F1) the result was within 0.0000002 of the true peak.
   This file is only ever appended to, so the supplied points and the queried
   points can always be told apart.
 - `results/query_log.csv` holds all 104 submissions: week, function, the
-  portal string, the observed value, and a new-best flag. Week 13's observed
-  values are blank.
+  portal string, the observed value, and a new-best flag.
 - Queries use the portal format: hyphen-separated, six decimals per
   coordinate, usable domain `[0.000001, 0.999999]`.
-- Determinism was tested directly. The F5 corner was queried three times
-  (weeks 7, 10 and 12) and returned `8662.405001248297` bit-for-bit each time.
+- Determinism was tested directly. The F5 corner was queried four times
+  (weeks 7, 10, 12 and 13) and returned `8662.405001248297` bit-for-bit each time.
 
 Full provenance and composition: [`datasheets/`](datasheets/README.md).
 
@@ -128,24 +127,25 @@ There are two layers.
 
 ## Results
 
-Best values after 12 graded rounds. These are recomputed directly from
-`data/` by `notebooks/BBO_results.ipynb`.
+Final best values over the complete 13-round campaign. These are recomputed
+directly from `data/` by `notebooks/BBO_results.ipynb`.
 
 | Fn | Dim | Initial best | Final best | Found in week | Records | Method that found it |
 |----|-----|-------------:|-----------:|:-------------:|:-------:|----------------------|
-| 1 | 2D | 7.7e-16 | **1.9999998375** | 12 | 7 | log-magnitude triangulation, then value quadratic, then 1D parabolas (true max 2.0) |
-| 2 | 2D | 0.6112 | **0.6612264** | 9 | 3 | local search; periodic micro-spikes (period 2.71e-4) characterised |
+| 1 | 2D | 7.7e-16 | **1.9999998885** | 13 | 8 | log-magnitude triangulation, then value quadratic, then 1D parabolas (true max 2.0) |
+| 2 | 2D | 0.6112 | **0.7472264** | 13 | 4 | periodic micro-spikes (period 2.71e-4) characterised; the final two-period extrapolation gained +13% |
 | 3 | 3D | -0.03484 | **-0.0081869** | 5 | 1 | local EI refinement after corner sweeps |
-| 4 | 4D | -4.0255 | **0.6021860** | 12 | 8 | trust region, then local triangulation (6 records in a row) |
+| 4 | 4D | -4.0255 | **0.6023985** | 13 | 9 | trust region, then local triangulation (7 records in a row) |
 | 5 | 4D | 1088.86 | **8662.405001248297** | 7 | 6 | log-GP trend-riding to the (1,1,1,1) corner; proven maximum |
-| 6 | 5D | -0.71427 | **-0.0974975** | 12 | 5 | trust-region hill climb, still improving at the end |
-| 7 | 6D | 1.36497 | **2.8093300** | 11 | 5 | trust region with capped lengthscales |
-| 8 | 8D | 9.59848 | **9.9481070** | 12 | 6 | tight trust regions (4 records in the last 4 weeks) |
+| 6 | 5D | -0.71427 | **-0.0610978** | 13 | 6 | trust-region hill climb, still improving at the end |
+| 7 | 6D | 1.36497 | **2.8264462** | 13 | 6 | trust region with capped lengthscales |
+| 8 | 8D | 9.59848 | **9.9518160** | 13 | 7 | tight trust regions (5 records in the last 5 weeks) |
 
 *Records* counts the weeks that beat everything seen before, including the
-supplied data. There were 41 records across 96 graded queries.
+supplied data. There were 47 records across 104 graded queries - six of them
+in the final round.
 
-Across the campaign, 76 of 95 written predictions (80%) landed inside their
+Across the campaign, 82 of 103 written predictions (80%) landed inside their
 stated range ([`calibration_hits.png`](reports/figures/calibration_hits.png)).
 The headline predictions:
 
@@ -155,6 +155,8 @@ The headline predictions:
 | F1 | 1.99999988 | 1.99999984 |
 | F7 | 2.799 | 2.7945 |
 | F8 | 9.942 | 9.9481 |
+| F8 | 9.952 | 9.9518 |
+| F6 | -0.063 | -0.0611 |
 
 Final surrogates for each function are in [`reports/figures/`](reports/figures).
 
@@ -166,7 +168,7 @@ bbo-capstone/
 |-- model_card.md             <- the optimisation approach, documented as a model
 |-- datasheets/               <- dataset overview + one datasheet per function
 |-- requirements.txt
-|-- data/function_{1..8}/     <- supplied .npy (unmodified) + observations.csv (12 graded rows)
+|-- data/function_{1..8}/     <- supplied .npy (unmodified) + observations.csv (13 graded rows)
 |-- src/bbo/
 |   |-- config.py             <- final per-function regimes (the strategy, as data)
 |   |-- data.py               <- loading, appending, portal formatting and validation
@@ -182,8 +184,7 @@ bbo-capstone/
 |   `-- calibration.md        <- predictions vs results, round by round
 |-- notebooks/BBO_results.ipynb  <- start here: results, figures and a walk through each regime
 |-- reports/                  <- figures, week-13 tracking sheet
-|-- docs/literature.md        <- the methods each component is based on
-`-- tests/test_format.py      <- portal format, domain, and fitting invariants
+`-- docs/literature.md        <- the methods each component is based on
 ```
 
 ## Reproducing
@@ -192,7 +193,7 @@ bbo-capstone/
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 pytest tests/                                  # 7 tests
-python scripts/weekly_run.py                   # re-derives the round-13 queries
+python scripts/weekly_run.py                   # re-derives the final (round-13) queries
 python scripts/make_figures.py                 # rebuilds reports/figures/
 jupyter nbconvert --execute --inplace notebooks/BBO_results.ipynb
 ```

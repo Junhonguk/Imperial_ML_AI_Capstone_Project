@@ -1,6 +1,6 @@
 # Datasheet: Function 8 (8D)
 
-*BBO capstone. This record is final at 12 graded queries; the round-13 query has been submitted and its result is pending.*
+*BBO capstone. This record is final: the campaign is complete at 13 graded queries.*
 *Every number on this page comes from `data/function_8/` and `results/query_log.csv` (sheets generated, then checked against the data).*
 
 ---
@@ -25,7 +25,7 @@ Maximise.
 ## 2. Nature of the data
 
 **Structure**
-Inputs are `float64` in [0, 1]^8. The supplied outputs range from 5.592 to 9.598 (median 7.889). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x8,y`). There are 52 observations in total (40 supplied + 12 queried).
+Inputs are `float64` in [0, 1]^8. The supplied outputs range from 5.592 to 9.598 (median 7.889). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x8,y`). There are 53 observations in total (40 supplied + 13 queried).
 
 **How the data changed over the campaign**
 One point per week. The supplied design is space-filling, the early queries are spread out (corners, faces, global EI), and the later queries are concentrated within about 0.01-0.05 of the incumbent. The final dataset is therefore dense around the best point and sparse elsewhere. That suits maximisation but makes it a biased sample of the function as a whole.
@@ -72,17 +72,17 @@ Plateau at 9.930 from week 2 to week 9. It was broken in week 9, which began fou
 | 10 | `0.092957-0.150582-0.136047-0.000001-0.999999-0.471948-0.203583-0.999999` | 9.940478744 | yes |
 | 11 | `0.072957-0.170582-0.156047-0.000001-0.979999-0.491948-0.183583-0.999999` | 9.940775084 | yes |
 | 12 | `0.087957-0.155582-0.141047-0.000001-0.964999-0.506948-0.189443-0.984999` | 9.948107032 | yes |
-| 13 | `0.095725-0.148082-0.133402-0.000001-0.949999-0.521948-0.190308-0.969999` | *pending* | |
+| 13 | `0.095725-0.148082-0.133402-0.000001-0.949999-0.521948-0.190308-0.969999` | 9.951815989 | yes |
 
 *Record* means the reading beat every earlier observation, including the supplied data.
 
 ## 6. Performance and results
 
-Best 9.9481070 at (0.087957, 0.155582, 0.141047, 0.000001, 0.964999, 0.506948, 0.189443, 0.984999), week 12. Week 13 continues the trend (x5 moving into the interior); the driver predicts 9.952 ± 0.001.
+Best 9.9518160 at (0.095725, 0.148082, 0.133402, 0.000001, 0.949999, 0.521948, 0.190308, 0.969999), week 13. The final step continued the x5-into-the-interior trend and hit its prediction of 9.952 ± 0.001 almost exactly - a seventh record, and the fifth in a row.
 
 | Supplied best | Final best | Gain | Best point (week) |
 |---:|---:|---:|---|
-| 9.598482003 | 9.948107032 | +0.3496 | `0.087957-0.155582-0.141047-0.000001-0.964999-0.506948-0.189443-0.984999` (week 12) |
+| 9.598482003 | 9.951815989 | +0.3533 | `0.095725-0.148082-0.133402-0.000001-0.949999-0.521948-0.190308-0.969999` (week 13) |
 
 The surrogate at campaign end: [`reports/figures/surrogate_F8.png`](../reports/figures/surrogate_F8.png).
 
