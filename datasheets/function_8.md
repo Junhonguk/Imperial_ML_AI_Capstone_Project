@@ -1,20 +1,20 @@
 # Datasheet: Function 8 (8D)
 
-*BBO capstone. Snapshot after 9 graded queries. The week-10 query has been submitted and its result is pending.*
-*All numbers come from `data/function_8/` and `results/query_log.csv`.*
+*BBO capstone. This record is final at 12 graded queries; the round-13 query has been submitted and its result is pending.*
+*Every number on this page comes from `data/function_8/` and `results/query_log.csv` (sheets generated, then checked against the data).*
 
 ---
 
 ## 1. Function overview
 
-**Which function?**
-Function 8. Description hint: *near-linear, plateau*.
+**Which function is this?**
+Function 8, with description hint: *near-linear, plateau*.
 
 **Input dimension and domain**
-8D, on the unit hypercube. Queries are submitted with six decimals and clipped to [0.000001, 0.999999].
+8D, the unit hypercube. Queries are submitted with six decimals and clipped to [0.000001, 0.999999].
 
 **How many supplied points?**
-40 points: `initial_inputs.npy` has shape (40, 8) and `initial_outputs.npy` has shape (40,).
+40: `initial_inputs.npy` with shape (40, 8) and `initial_outputs.npy` with shape (40,).
 
 **What does the output represent?**
 A score near 10. The supplied data ranges from 5.59 to 9.60.
@@ -25,42 +25,38 @@ Maximise.
 ## 2. Nature of the data
 
 **Structure**
-Inputs are `float64` in [0, 1]^8. Supplied outputs range from 5.592 to 9.598, with median 7.889.
+Inputs are `float64` in [0, 1]^8. The supplied outputs range from 5.592 to 9.598 (median 7.889). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x8,y`). There are 52 observations in total (40 supplied + 12 queried).
 
-The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x8,y`). There are 49 observations so far: 40 supplied and 9 queried.
-
-**How the data evolves**
-One point is added per week. The supplied design is space-filling. Early queries spread out (corners, faces, global EI), and later queries cluster within about 0.01–0.08 of the incumbent.
-
-The dataset is therefore becoming dense around the best point and stays sparse elsewhere. That is the right allocation for maximisation, but it makes the data a biased sample of the function as a whole.
+**How the data changed over the campaign**
+One point per week. The supplied design is space-filling, the early queries are spread out (corners, faces, global EI), and the later queries are concentrated within about 0.01-0.05 of the incumbent. The final dataset is therefore dense around the best point and sparse elsewhere. That suits maximisation but makes it a biased sample of the function as a whole.
 
 **Noise and randomness**
-Treated as noise-free.
+Deterministic (campaign-wide replicate).
 
-**Observed shape**
-Smooth and close to linear over most of the domain. The optimum combines faces (x4 = 0, x5 near 1) with interior values for the other inputs.
+**Shape of the function, as observed**
+Smooth and close to linear over most of the domain, with the optimum at a mix of faces (x4 = 0, x5 and x8 near 1) and interior values. Final lengthscales are long (1.5-4.0), and four inputs are at the cap of 4.0.
 
 ## 3. Optimisation strategy
 
 **Methods used**
-GP + EI in weeks 1–4. From week 5, tight trust regions, now with half-width 0.03, cap 4.0 and ξ = 0.001.
+GP + EI (weeks 1-4); tight trust regions (week 5 onward), ending with half-width 0.015 and cap 4.0.
 
 **Why these methods**
-Eight dimensions with 40 supplied points. A global EI step moves all eight inputs at once and overshoots: weeks 4–6 lost 0.08–0.13 this way. Tight boxes take small steps along each input, which suits a near-linear surface with a shallow peak.
+Eight dimensions with 40 supplied points: a global EI step changes all eight inputs at once and overshoots. Weeks 4-6 lost 0.08-0.13 this way. Tight boxes move little along each input, which suits a near-linear surface with a shallow peak.
 
-**Current regime** (`src/bbo/config.py`)
-`trust_region`. plateau cracked at 9.9347; keep tight.
+**Final regime** (`src/bbo/config.py`)
+`trust_region`. 5 straight end-phase gains to 9.9481; x5 trending interior.
 
 ## 4. Data handling and preprocessing
 
-- Raw outputs. x4 held at 0.000001 since week 5.
-- Inputs are not rescaled, because the domain is already [0, 1]^8.
-- No points have been removed or edited. Bad points are kept, because they constrain the surrogate.
-- Every query is checked with `bbo.data.validate` before submission: dimension, six decimals, and inside (0, 1).
+- Raw outputs; x4 held at 0.000001 from week 5.
+- Inputs are not rescaled: the domain is already [0, 1]^8.
+- No points were removed or edited. Points that turned out to be bad are kept, because they constrain the surrogate.
+- Every query was checked with `bbo.data.validate` before submission (dimension, six decimals, inside (0, 1)).
 
 ## 5. Weekly iteration and learning
 
-The value plateaued at 9.930 from week 2. Week 9 broke the plateau at 9.9347 after the box was tightened.
+Plateau at 9.930 from week 2 to week 9. It was broken in week 9, which began four records in a row (9.9347, 9.9405, 9.9408, 9.9481). The calibration hits included 9.941 predicted against 9.94078 observed, and 9.942 against 9.9481.
 
 | Week | Query (portal string) | Observed | Record? |
 |---:|---|---:|:---:|
@@ -73,22 +69,25 @@ The value plateaued at 9.930 from week 2. Week 9 broke the plateau at 9.9347 aft
 | 7 | `0.032761-0.150582-0.114046-0.000001-0.999999-0.351948-0.248053-0.939999` | 9.909596896 |  |
 | 8 | `0.128458-0.050582-0.182880-0.000001-0.999999-0.371948-0.243583-0.959999` | 9.904451764 |  |
 | 9 | `0.122761-0.120582-0.158295-0.000001-0.999999-0.441948-0.173583-0.969999` | 9.934741457 | yes |
-| 10 | `0.092957-0.150582-0.136047-0.000001-0.999999-0.471948-0.203583-0.999999` | *pending* | |
+| 10 | `0.092957-0.150582-0.136047-0.000001-0.999999-0.471948-0.203583-0.999999` | 9.940478744 | yes |
+| 11 | `0.072957-0.170582-0.156047-0.000001-0.979999-0.491948-0.183583-0.999999` | 9.940775084 | yes |
+| 12 | `0.087957-0.155582-0.141047-0.000001-0.964999-0.506948-0.189443-0.984999` | 9.948107032 | yes |
+| 13 | `0.095725-0.148082-0.133402-0.000001-0.949999-0.521948-0.190308-0.969999` | *pending* | |
 
 *Record* means the reading beat every earlier observation, including the supplied data.
 
 ## 6. Performance and results
 
-Best is 9.9347415 at (0.122761, 0.120582, 0.158295, 0.000001, 0.999999, 0.441948, 0.173583, 0.969999), week 9. The week-10 query is a trust-region step, and the driver predicts 9.946 ± 0.010.
+Best 9.9481070 at (0.087957, 0.155582, 0.141047, 0.000001, 0.964999, 0.506948, 0.189443, 0.984999), week 12. Week 13 continues the trend (x5 moving into the interior); the driver predicts 9.952 ± 0.001.
 
-| Supplied best | Best after week 9 | Gain | Best point (week) |
+| Supplied best | Final best | Gain | Best point (week) |
 |---:|---:|---:|---|
-| 9.598482003 | 9.934741457 | +0.3363 | `0.122761-0.120582-0.158295-0.000001-0.999999-0.441948-0.173583-0.969999` (week 9) |
+| 9.598482003 | 9.948107032 | +0.3496 | `0.087957-0.155582-0.141047-0.000001-0.964999-0.506948-0.189443-0.984999` (week 12) |
 
-The surrogate behind the week-10 query is plotted in [`reports/figures/surrogate_F8.png`](../reports/figures/surrogate_F8.png).
+The surrogate at campaign end: [`reports/figures/surrogate_F8.png`](../reports/figures/surrogate_F8.png).
 
 ## 7. Ethical and practical considerations
 
-- With 8 inputs and 49 points, any claim about which inputs 'matter' is weak. A lengthscale sitting at its cap means 'not resolved', not 'irrelevant'.
-- **Provenance.** The function and its supplied data come from the course, and the true formula is unknown. The scenario hints are illustrations, not claims about real systems.
-- **Reuse.** The data is useful for testing optimisers on the same function. It is not a representative sample of the function (see section 2), so it should not be used to train a global regression model without reweighting.
+- With 8 inputs and 52 points, any claim about which inputs 'matter' is weak. Lengthscales that hit their cap mean 'not resolved', not 'irrelevant'.
+- **Provenance.** The function and its supplied data come from the course; the true formula is unknown. Scenario descriptions are illustrations, not claims about real systems.
+- **Reuse.** This dataset is useful for testing optimisers on the same function. It is not a representative sample of the function (see section 2), so it should not be used to train a global regression model without reweighting.

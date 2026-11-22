@@ -1,32 +1,26 @@
-"""Per-function regimes - the whole strategy, expressed as data.
+"""Per-function regimes at campaign end - the strategy, as data.
 
-Edit THIS file each week as calibration results come in; the code elsewhere
-never changes. Regimes:
-  'ei'            standard EI over the full domain
-  'trust_region'  EI in a box around the incumbent (capped lengthscales)
-  'face'          EI with some dimensions fixed (edge/face restriction)
-  'triangulate'   query the parametric fit centre (needle peaks)
-  'mean_argmax'   posterior-mean argmax (noisy endgame)
-  'bank'          re-query the best-known point (final weeks)
+Regimes: 'ei' | 'trust_region' | 'face' | 'triangulate' | 'micro' (1D
+parabola steps) | 'lottery' (structure below resolution) | 'done' (proven).
 """
 
 CONFIG = {
-    1: dict(dim=2, regime="triangulate", transform="logabs", value_fit_near_peak=True,
-            note="solved: peak (0.628534, 0.628592), f -> 2.0"),
-    2: dict(dim=2, regime="mean_argmax", noisy=True, box=([0.64, 0.92], [0.75, 1.0]),
-            note="noise sd ~ 0.06 measured; replicate-average the best region"),
-    3: dict(dim=3, regime="trust_region", box_half=0.03, xi=0.002,
-            note="incumbent (0.484, 0.760, 0.488); quadratic locally imperfect"),
+    1: dict(dim=2, regime="micro",
+            note="peak (0.628534, 0.628540); best 1.9999998; true max = 2.0"),
+    2: dict(dim=2, regime="lottery",
+            note="periodic micro-spikes, period 2.71e-4, heights rising with x1; best 0.6612"),
+    3: dict(dim=3, regime="trust_region", box_half=0.006, ls_hi=0.2, xi=0.0,
+            note="incumbent (0.484, 0.760, 0.488) = narrow spike; best -0.0082"),
     4: dict(dim=4, regime="triangulate", transform="raw", radius=0.13,
-            note="converged: centre (0.4088, 0.4008, 0.3650, 0.4114), peak ~ 0.60"),
-    5: dict(dim=4, regime="bank", best=[1 - 1e-6] * 4,
-            note="corner is the max; 3 interaction probes all lost"),
-    6: dict(dim=5, regime="trust_region", box_half=0.08, xi=0.003, ls_hi=1.0,
-            note="momentum: -0.714 -> -0.137 and climbing"),
-    7: dict(dim=6, regime="trust_region", box_half=0.04, xi=0.002, ls_hi=2.0,
-            note="plateau 2.79 after 4 records"),
-    8: dict(dim=8, regime="trust_region", box_half=0.03, xi=0.001, ls_hi=4.0,
-            note="plateau cracked at 9.9347; keep tight"),
+            note="centre converged; 6 straight records to 0.60219"),
+    5: dict(dim=4, regime="done", best=[1 - 1e-6] * 4,
+            note="corner proven max 8662.405001248297 (4-direction audit; 3x bit-identical)"),
+    6: dict(dim=5, regime="trust_region", box_half=0.02, ls_hi=0.5, xi=0.0,
+            note="still climbing at campaign end: -0.714 -> -0.0975"),
+    7: dict(dim=6, regime="trust_region", box_half=0.008, ls_hi=2.0, xi=0.0,
+            note="best 2.8093; plateau cracked twice by tightening"),
+    8: dict(dim=8, regime="trust_region", box_half=0.015, ls_hi=4.0, xi=0.0,
+            note="5 straight end-phase gains to 9.9481; x5 trending interior"),
 }
 
 # Exploration-margin schedule used over the campaign (for the report):

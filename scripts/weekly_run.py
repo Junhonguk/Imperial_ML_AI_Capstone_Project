@@ -20,22 +20,22 @@ def run(data_dir):
     for i, cfg in CONFIG.items():
         X, y = data.load(data_dir, i)
         regime = cfg["regime"]
-        if regime == "bank":
+        if regime == "done":
             q = np.asarray(cfg["best"], float)
-            print(f"F{i}: {data.portal_format(q)}   (bank best-known point)")
+            print(f"F{i}: {data.portal_format(q)}   (proven maximum)")
+            continue
+        if regime in ("micro", "lottery"):
+            print(f"F{i}: regime '{regime}' - hand-crafted final step; "
+                  f"see results/query_log.csv for the choices made. {cfg['note']}")
             continue
         if regime == "triangulate":
             inc = X[np.argmax(y)]
-            if cfg.get("value_fit_near_peak"):
-                m = y > 0.5 * y.max()
-                c, pk, r2, ok = triangulation.isotropic_fit(X[m], y[m])
-            else:
-                c, pk, r2, ok = triangulation.triangulate(
-                    X, y, radius=cfg.get("radius"), anchor=inc,
-                    use_log_magnitude=(cfg.get("transform") == "logabs"))
+            c, pk, r2, ok = triangulation.triangulate(
+                X, y, radius=cfg.get("radius"), anchor=inc,
+                use_log_magnitude=(cfg.get("transform") == "logabs"))
             assert ok, f"F{i}: fit is not a peak - fall back to trust region"
             print(f"F{i}: {data.portal_format(c)}   (triangulated centre, "
-                  f"predicted peak ~ {pk:.4g}, R2 = {r2:.3f})")
+                  f"peak ~ {pk:.4g}, R2 = {r2:.3f})")
             continue
         z = surrogates.transform(y, cfg.get("transform", "raw"))
         gp = surrogates.fit_gp(X, z, noisy=cfg.get("noisy", False),
@@ -44,8 +44,6 @@ def run(data_dir):
         lo = hi = None
         if "box_half" in cfg:
             lo, hi = inc - cfg["box_half"], inc + cfg["box_half"]
-        elif "box" in cfg:
-            lo, hi = np.asarray(cfg["box"][0]), np.asarray(cfg["box"][1])
         q, _ = acquisition.propose(
             gp, cfg["dim"], z.max(), xi=cfg.get("xi", 0.01), lo=lo, hi=hi,
             fixed=cfg.get("fixed"),

@@ -3,7 +3,7 @@
 An isotropic Gaussian bump has log-magnitude a + b.x + c*|x|^2 (a quadratic
 with a single curvature coefficient), so its centre is recoverable by linear
 least squares from a handful of readings. Near the peak the same form is
-fitted to RAW values for final refinement.
+fitted to RAW values for final refinement; 1D parabolas along one axis finish the job.
 """
 import numpy as np
 
@@ -64,3 +64,11 @@ def consensus_centre(X, y, ks=(5, 6, 7, 8), use_log_magnitude=True, tol=0.02):
     spread = np.ptp(centres, axis=0).max()
     assert spread < tol, f"subsets disagree by {spread:.4f} (> {tol})"
     return centres.mean(axis=0)
+
+
+def parabola_step(xs, ys):
+    """1D final refinement: vertex of the parabola through 3 (x, y) points."""
+    co = np.polyfit(np.asarray(xs, float), np.asarray(ys, float), 2)
+    assert co[0] < 0, "parabola opens upward - not a peak"
+    v = -co[1] / (2 * co[0])
+    return v, float(np.polyval(co, v))

@@ -1,20 +1,20 @@
 # Datasheet: Function 2 (2D)
 
-*BBO capstone. Snapshot after 9 graded queries. The week-10 query has been submitted and its result is pending.*
-*All numbers come from `data/function_2/` and `results/query_log.csv`.*
+*BBO capstone. This record is final at 12 graded queries; the round-13 query has been submitted and its result is pending.*
+*Every number on this page comes from `data/function_2/` and `results/query_log.csv` (sheets generated, then checked against the data).*
 
 ---
 
 ## 1. Function overview
 
-**Which function?**
-Function 2. Description hint: *noisy log-likelihood*.
+**Which function is this?**
+Function 2, with description hint: *noisy log-likelihood*.
 
 **Input dimension and domain**
-2D, on the unit hypercube. Queries are submitted with six decimals and clipped to [0.000001, 0.999999].
+2D, the unit hypercube. Queries are submitted with six decimals and clipped to [0.000001, 0.999999].
 
 **How many supplied points?**
-10 points: `initial_inputs.npy` has shape (10, 2) and `initial_outputs.npy` has shape (10,).
+10: `initial_inputs.npy` with shape (10, 2) and `initial_outputs.npy` with shape (10,).
 
 **What does the output represent?**
 A log-likelihood-like score. Higher is better.
@@ -25,42 +25,38 @@ Maximise.
 ## 2. Nature of the data
 
 **Structure**
-Inputs are `float64` in [0, 1]^2. Supplied outputs range from -0.06562 to 0.6112, with median 0.2298.
+Inputs are `float64` in [0, 1]^2. The supplied outputs range from -0.06562 to 0.6112 (median 0.2298). The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x2,y`). There are 22 observations in total (10 supplied + 12 queried).
 
-The supplied files are kept unmodified. Each graded query is appended as one row of `observations.csv` (`x1..x2,y`). There are 19 observations so far: 10 supplied and 9 queried.
-
-**How the data evolves**
-One point is added per week. The supplied design is space-filling. Early queries spread out (corners, faces, global EI), and later queries cluster within about 0.01–0.08 of the incumbent.
-
-The dataset is therefore becoming dense around the best point and stays sparse elsewhere. That is the right allocation for maximisation, but it makes the data a biased sample of the function as a whole.
+**How the data changed over the campaign**
+One point per week. The supplied design is space-filling, the early queries are spread out (corners, faces, global EI), and the later queries are concentrated within about 0.01-0.05 of the incumbent. The final dataset is therefore dense around the best point and sparse elsewhere. That suits maximisation but makes it a biased sample of the function as a whole.
 
 **Noise and randomness**
-Treated as noisy. Measured noise sd is about 0.06: the week-5 query, about 0.004 from the week-4 record, returned 0.489 against 0.646. The GP carries a WhiteKernel, and the endgame objective is the posterior mean rather than EI.
+Treated as noisy (WhiteKernel, sd about 0.06) from week 4 to week 10, because nearby points returned very different values. After the week-10 F5 replicate proved determinism, the scatter was reinterpreted as real structure below 1e-3. That reinterpretation is the most important modelling correction in the campaign.
 
-**Observed shape**
-A broad ridge along x1 ≈ 0.69, highest on the x2 = 1 edge. Readings near the best point vary sharply, by up to 0.16 between points about 0.004 apart.
+**Shape of the function, as observed**
+A broad ridge along x1 ≈ 0.69, highest on the x2 = 1 edge, with deterministic periodic micro-spikes along x1 (period about 2.71e-4) whose heights vary sharply between neighbouring points.
 
 ## 3. Optimisation strategy
 
 **Methods used**
-Noise-aware GP + EI for weeks 1–3, using corner and edge probes. From week 4, a local search along the x2 = 1 edge. Now it maximises the posterior mean inside the box [0.64, 0.75] × [0.92, 1.0] (`mean_argmax`).
+Noise-aware GP + EI (weeks 1-3: corner and edge probes); a local search along the x2 = 1 edge (weeks 4-9); a 'lottery' over the periodic spikes (weeks 10-13).
 
 **Why these methods**
-Week 4 found the x2 = 1 edge (0.646). The following readings scattered widely, so it is risky to chase a single high reading. The posterior-mean argmax averages over nearby replicates instead.
+Week 4 found the x2 = 1 edge (0.646). Readings less than 1e-3 apart then differed by up to 0.2 (weeks 9 and 10: 0.661 and 0.460, 3e-4 apart), which a smooth GP can only call noise. Once determinism was known, the spacing of the high readings gave a period. The remaining queries were placed at predicted spike positions instead of at the GP's posterior-mean argmax.
 
-**Current regime** (`src/bbo/config.py`)
-`mean_argmax`. noise sd ~ 0.06 measured; replicate-average the best region.
+**Final regime** (`src/bbo/config.py`)
+`lottery`. periodic micro-spikes, period 2.71e-4, heights rising with x1; best 0.6612.
 
 ## 4. Data handling and preprocessing
 
-- Raw outputs. Every query since week 4 has x2 near 1.
-- Inputs are not rescaled, because the domain is already [0, 1]^2.
-- No points have been removed or edited. Bad points are kept, because they constrain the surrogate.
-- Every query is checked with `bbo.data.validate` before submission: dimension, six decimals, and inside (0, 1).
+- Raw outputs. x2 pinned to 0.999999 from week 4.
+- Inputs are not rescaled: the domain is already [0, 1]^2.
+- No points were removed or edited. Points that turned out to be bad are kept, because they constrain the surrogate.
+- Every query was checked with `bbo.data.validate` before submission (dimension, six decimals, inside (0, 1)).
 
 ## 5. Weekly iteration and learning
 
-The week-5 miss right beside the incumbent measured the noise level and moved the regime to posterior-mean replicates. Weeks 8–9 then set two records, 0.657 and 0.661, about 3e-4 apart in x1.
+The week-11 parabola fit along x1 was refuted (0.481). The period model then predicted a spike at x1 = 0.691068 (= 0.69161 − 2 × 2.71e-4), and week 12 returned 0.643, confirming the position although not beating 0.6612. Week 13 tests the next predicted spike at 0.691881 (+1 period).
 
 | Week | Query (portal string) | Observed | Record? |
 |---:|---|---:|:---:|
@@ -73,22 +69,25 @@ The week-5 miss right beside the incumbent measured the noise level and moved th
 | 7 | `0.692868-0.999999` | 0.5699647649 |  |
 | 8 | `0.691339-0.999999` | 0.6572612055 | yes |
 | 9 | `0.691610-0.999999` | 0.6612264043 | yes |
-| 10 | `0.691909-0.999999` | *pending* | |
+| 10 | `0.691909-0.999999` | 0.460321852 |  |
+| 11 | `0.691481-0.999999` | 0.4814186 |  |
+| 12 | `0.691068-0.999999` | 0.6431640269 |  |
+| 13 | `0.691881-0.999999` | *pending* | |
 
 *Record* means the reading beat every earlier observation, including the supplied data.
 
 ## 6. Performance and results
 
-Best is 0.6612264 at (0.691610, 0.999999), week 9. The week-10 query (0.691909, 0.999999) is the posterior-mean argmax; the driver predicts 0.592 ± 0.064.
+Best 0.6612264 at (0.691610, 0.999999), week 9. The gain over the supplied design (+0.050) is the smallest of the eight functions.
 
-| Supplied best | Best after week 9 | Gain | Best point (week) |
+| Supplied best | Final best | Gain | Best point (week) |
 |---:|---:|---:|---|
 | 0.6112052158 | 0.6612264043 | +0.05002 | `0.691610-0.999999` (week 9) |
 
-The surrogate behind the week-10 query is plotted in [`reports/figures/surrogate_F2.png`](../reports/figures/surrogate_F2.png).
+The surrogate at campaign end: [`reports/figures/surrogate_F2.png`](../reports/figures/surrogate_F2.png).
 
 ## 7. Ethical and practical considerations
 
-- Under noise, a single best reading is an optimistic estimate of the true best (the winner's curse). Reporting the posterior mean alongside the best reading keeps the claim honest.
-- **Provenance.** The function and its supplied data come from the course, and the true formula is unknown. The scenario hints are illustrations, not claims about real systems.
-- **Reuse.** The data is useful for testing optimisers on the same function. It is not a representative sample of the function (see section 2), so it should not be used to train a global regression model without reweighting.
+- A real likelihood surface with micro-structure like this would point to numerical problems in the likelihood code (quadrature, step size) rather than a real optimum. Optimising over it without checking would be overfitting. The datasheet records the structure; the query choices do not claim more than they show.
+- **Provenance.** The function and its supplied data come from the course; the true formula is unknown. Scenario descriptions are illustrations, not claims about real systems.
+- **Reuse.** This dataset is useful for testing optimisers on the same function. It is not a representative sample of the function (see section 2), so it should not be used to train a global regression model without reweighting.

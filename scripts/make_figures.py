@@ -35,6 +35,9 @@ READING = "#a8a7a2"   # individual readings (context, not the story)
 # Output transform the surrogate needs per function (see README "Method").
 # config.py carries it for live regimes; F5 is banked, so its log-GP is named here.
 TRANSFORM = {1: "logabs", 5: "log"}
+# F2's late queries sit ~1e-4 apart on deterministic micro-structure; a noise-free
+# GP degenerates there, so plot the noise-term GP used while F2 was treated as noisy.
+NOISY = {2: True}
 
 plt.rcParams.update({
     "font.size": 9, "axes.edgecolor": INK_2, "axes.labelcolor": INK_2,
@@ -76,7 +79,7 @@ def best_so_far(data_dir, out):
                    label="best in initial data")
         ax.set_ylim(lo, hi)
         ax.set_xlim(-0.3, len(weekly) + 0.5)
-        ax.set_xticks(range(0, len(weekly) + 1, 3))
+        ax.set_xticks([0, 3, 6, 9, 12])
         ax.set_title(f"F{i} ({CONFIG[i]['dim']}D)   best {top:.8g}", loc="left",
                      fontsize=9.5)
         ax.ticklabel_format(axis="y", useOffset=False)
@@ -90,7 +93,7 @@ def best_so_far(data_dir, out):
                 labels.append(l)
     fig.legend(handles, labels, loc="lower center", ncol=4, frameon=False,
                bbox_to_anchor=(0.5, -0.04))
-    fig.suptitle(f"Best value found per function over {len(weekly)} graded weeks",
+    fig.suptitle("Best value found per function over 12 graded weeks",
                  x=0.01, ha="left", color=INK, fontsize=11)
     fig.tight_layout(rect=(0, 0.03, 1, 0.97))
     fig.savefig(out / "best_so_far.png")
@@ -98,7 +101,7 @@ def best_so_far(data_dir, out):
 
 
 def calibration_hits(results_dir, out):
-    rows = re.findall(r"^\|\s*(\d+\s*->\s*\d+)\s*\|\s*(\d+)/(\d+)[^|]*\|",
+    rows = re.findall(r"^\|\s*(\d+->\s*\d+)\s*\|\s*(\d+)/(\d+)\s*\|",
                       (Path(results_dir) / "calibration.md").read_text(),
                       flags=re.M)
     labels = [str(k + 1) for k in range(len(rows))]
@@ -126,9 +129,9 @@ def calibration_hits(results_dir, out):
 
 def fit_final_gp(data_dir, i):
     X, y = data.load(data_dir, i)
-    how = CONFIG[i].get("transform") or TRANSFORM.get(i, "raw")
+    how = TRANSFORM.get(i, "raw")
     z = surrogates.transform(y, how)
-    gp = surrogates.fit_gp(X, z, noisy=CONFIG[i].get("noisy", False),
+    gp = surrogates.fit_gp(X, z, noisy=NOISY.get(i, False),
                            ls_hi=CONFIG[i].get("ls_hi", 10.0))
     return X, y, z, gp, how
 
@@ -173,8 +176,8 @@ def surrogate_2d(data_dir, i, out):
                  transform=ins.transAxes, ha="center", fontsize=7, color=INK_2)
         ax.indicate_inset_zoom(ins, edgecolor=INK_2)
     label = "log|y|" if how == "logabs" else "y"
-    extra = " (with noise term)" if CONFIG[i].get("noisy") else ""
-    ax.set_title(f"F{i}: GP surrogate of {label} after week 9{extra}", loc="left",
+    extra = " (with noise term)" if NOISY.get(i) else ""
+    ax.set_title(f"F{i}: final GP surrogate of {label}{extra}", loc="left",
                  fontsize=10)
     fig.savefig(out / f"surrogate_F{i}.png")
     plt.close(fig)
@@ -212,7 +215,7 @@ def surrogate_slices(data_dir, i, out):
     ls = getattr(getattr(gp.kernel_, "k2", None), "length_scale", None)
     sub = ("lengthscales " + ", ".join(f"{v:.2g}" for v in np.atleast_1d(ls))
            if ls is not None else "")
-    fig.suptitle(f"F{i}: GP surrogate after week 9, one input varied at a time through "
+    fig.suptitle(f"F{i}: final GP surrogate, one input varied at a time through "
                  f"the best point   [{sub}]", x=0.01, ha="left", fontsize=10,
                  color=INK)
     fig.tight_layout(rect=(0, 0.02, 1, 0.95))

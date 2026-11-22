@@ -1,12 +1,12 @@
 # Notebooks
 
-`BBO_results.ipynb` is the place to start. It:
+- `BBO_results.ipynb` is the place to start. It recomputes the results table
+  from `data/`, rebuilds the figures, summarises the calibration record, and
+  walks through one example of each regime:
+  - expected improvement (F3)
+  - trust region (F7)
+  - triangulation and parabola steps (F1, F4)
+  - `done` (F5)
 
-- recomputes the results table from `data/`;
-- rebuilds the figures;
-- summarises the calibration record;
-- works through one example of each current regime: trust-region EI (F3,
-  F7), triangulation (F4, F1), posterior mean (F2) and bank (F5);
-- re-derives the submitted week-10 queries.
-
-It is committed with its outputs, so you can read it without running it.
+  The notebook is committed with its outputs, so it can be read without
+  running anything.

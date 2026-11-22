@@ -31,7 +31,7 @@ it and its reference.
 
 **Trust regions in place of global acquisition**
 - Used in: the `trust_region` regime in `config.py`; the box arguments of
-  `propose`.
+  `propose`; `weekly_scripts/derive_trust_region.py`.
 - Reference: Eriksson, D., Pearce, M., Gardner, J., Turner, R. D. &
   Poloczek, M. (2019). Scalable global optimization via local Bayesian
   optimization (TuRBO). *NeurIPS*. This project uses a simplified version:
@@ -44,7 +44,7 @@ it and its reference.
   Gaussian processes. *NeurIPS*. A fixed log warp is the simplest case.
 
 **Local quadratic and response-surface models**
-- Used in: `src/bbo/triangulation.py` (`isotropic_fit`, `consensus_centre`).
+- Used in: `src/bbo/triangulation.py` (`isotropic_fit`, `parabola_step`).
 - References:
   - Box, G. E. P. & Wilson, K. B. (1951). On the experimental attainment of
     optimum conditions. *JRSS B* 13. Second-order response surfaces near an
