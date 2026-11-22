@@ -1,0 +1,10 @@
+# core (pinned: these reproduce the submitted queries)
+numpy==2.4.4
+scipy==1.16.3
+scikit-learn==1.8.0
+# figures, notebook, tests
+matplotlib==3.11.2
+pandas==3.1.1
+pytest==9.2.0
+nbconvert==7.17.2
+ipykernel==7.4.0
